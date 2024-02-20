@@ -6,13 +6,13 @@ public class Employee {
     private String firstName;
     private String lastName;
 
-    public String getFirstName() {
-        return firstName;
-    }
-
     public Employee(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -47,7 +47,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return  firstName  + lastName ;
+        return firstName + lastName;
     }
 
 }

@@ -8,25 +8,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmployeeService {
     private final static int count = 10;
-    private List<Employee> employees;
+    private Map<Employee,Long> employees;
 
-    public EmployeeService() {
-        this.employees = new ArrayList<>();
+    public EmployeeService(Map<Employee,Long> employees) {
+        this.employees = employees;
     }
 
     private Employee find(Employee employee) {
-        Employee result = null;
-        for (Employee e : employees) {
-            if (e.equals(employee)) {
-                result = e;
-                break;
-            }
-        }
-        return result;
+        return employees.containsKey(employee)?employee:null;
     }
 
     public Employee search(String firstName, String lastName) {
@@ -40,7 +34,7 @@ public class EmployeeService {
         Employee employee = new Employee(firstName, lastName);
         if (employees.size() < count) {
             if (find(employee) == null)
-                employees.add(employee);
+                employees.put(employee, (long) (Math.random() * 100));
             else
                 throw new EmployeeAlreadyAddedException();
         } else
@@ -58,6 +52,6 @@ public class EmployeeService {
 
 
     public List<Employee> getAll() {
-        return employees;
+        return employees.keySet().stream().toList();
     }
 }
