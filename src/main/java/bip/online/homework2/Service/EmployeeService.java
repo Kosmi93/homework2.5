@@ -9,49 +9,46 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
     private final static int count = 10;
-    private Map<Employee,Long> employees;
+    private Map<String,Employee> employees;
 
-    public EmployeeService(Map<Employee,Long> employees) {
+    public EmployeeService(Map<String,Employee> employees) {
         this.employees = employees;
     }
 
-    private Employee find(Employee employee) {
-        return employees.containsKey(employee)?employee:null;
+    private Optional<Employee> find(String employee) {
+        return Optional.ofNullable(employees.get(employee));
     }
 
-    public Employee search(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        if (find(employee) == null)
-            throw new EmployeeNotFoundException();
-        return employee;
+    public Employee search(String surname , String name) {
+        return find((surname+name).toLowerCase()).orElseThrow(EmployeeNotFoundException::new);
     }
 
-    public Employee add(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+    public Employee add(Employee e) {
         if (employees.size() < count) {
-            if (find(employee) == null)
-                employees.put(employee, (long) (Math.random() * 100));
+            if (find((e.getSurname()+e.getName()).toLowerCase()).isEmpty())
+                employees.put((e.getSurname()+e.getName()).toLowerCase(), e);
             else
                 throw new EmployeeAlreadyAddedException();
         } else
             throw new EmployeeStorageIsFullException();
-        return employee;
+        return e;
     }
 
     public Employee remove(String firstName, String lastName) {
-        Employee employee = find(new Employee(firstName, lastName));
-        if (employee == null)
+        Optional<Employee> employee = find((firstName+lastName).toLowerCase());
+        if (employee.isEmpty())
             throw new EmployeeNotFoundException();
-        else employees.remove(employee);
-        return employee;
+        else employees.remove((firstName+lastName).toLowerCase());
+        return employee.get();
     }
 
 
     public List<Employee> getAll() {
-        return employees.keySet().stream().toList();
+        return employees.values().stream().toList();
     }
 }
