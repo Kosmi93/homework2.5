@@ -30,15 +30,13 @@ public class DepartmentController {
     }
 
     @GetMapping("/all")
-    public Map<String,List<Employee>> allDepartment() {
-
-        // return departmentId.equals("default")?service.getAll():service.getByDepartment(departmentId);
-        return  service.getAll() ;
+    public Map<String, List<Employee>> allDepartment() {
+        return service.getAll();
     }
+
     @GetMapping("/all-{id}")
     public List<Employee> findByDepartment(@PathVariable String id) {
-
-         return service.getByDepartment(id);
+        return service.getByDepartment(id);
 
     }
 
